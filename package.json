@@ -1,0 +1,15 @@
+{
+  "name": "echoes-of-history",
+  "version": "1.0.0",
+  "description": "A historical chronicles website with integrated Vercel Web Analytics",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["history", "chronicles", "analytics"],
+  "author": "Zaid",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}

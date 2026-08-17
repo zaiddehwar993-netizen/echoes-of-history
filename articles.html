@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles - Echoes of History</title>
+    <link rel="stylesheet" href="style.css?v=2.0">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">ECHOES OF <span>HISTORY</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html" class="active">Articles</a></li>
+                <li><a href="impact.html">Impact</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="articles-container" style="padding-top: 4rem; padding-bottom: 4rem;">
+        <div class="section-header">
+            <h2 class="section-title">Historical Chronicles</h2>
+            <div class="search-box">
+                <input type="text" id="searchInput" onkeyup="filterArticles()" placeholder="🔍 Search articles...">
+            </div>
+        </div>
+        
+        <div class="articles-grid">
+            <article class="article-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=800&q=80" alt="Islamic Science">
+                </div>
+                <div class="card-body">
+                    <span class="category-tag">Islamic Era</span>
+                    <h3>The Golden Age of Islamic Science</h3>
+                    <p>Discover how Muslim scholars preserved knowledge, invented algebra, and revolutionized astronomy and medicine.</p>
+                    <a href="contact.html" class="read-btn">
+                        <span>Read Article</span> <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+
+            <article class="article-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=800&q=80" alt="Ottoman Architecture">
+                </div>
+                <div class="card-body">
+                    <span class="category-tag">Ottoman History</span>
+                    <h3>Ottoman Empire: Architecture & Legacy</h3>
+                    <p>Unveiling diplomatic mastery, grand domes, and architectural marvels crafted under Sultanate rule.</p>
+                    <a href="contact.html" class="read-btn">
+                        <span>Read Article</span> <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+
+            <article class="article-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=800&q=80" alt="Pyramids">
+                </div>
+                <div class="card-body">
+                    <span class="category-tag">Ancient World</span>
+                    <h3>Ancient Egyptian Wonders</h3>
+                    <p>Exploring architectural secrets of the Pyramids, Pharaohs, and ancient engineering achievements.</p>
+                    <a href="contact.html" class="read-btn">
+                        <span>Read Article</span> <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <a href="https://wa.me/923108604886" target="_blank" class="floating-contact-btn">
+        <i class="fab fa-whatsapp"></i> <span>Hire Me</span>
+    </a>
+
+    <footer>
+        <p>&copy; 2026 Echoes of History. Developed by Zaid.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

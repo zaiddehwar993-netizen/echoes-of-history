@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impact - Echoes of History</title>
+    <meta name="description" content="See the growing impact of Echoes of History - articles published, readers reached, and why our platform stands out.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,6 +12,140 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
+
+    <style>
+        .impact-tagline {
+            text-align: center;
+            color: #999;
+            font-size: 0.95rem;
+            max-width: 500px;
+            margin: 0 auto 3rem;
+        }
+        .stat-box {
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+        }
+
+        /* Why Choose Us Section */
+        .why-section {
+            padding: 5rem 5% 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .why-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .why-header span {
+            color: #d4af37;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .why-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #f4f4f4;
+            margin: 10px 0;
+        }
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        @media (max-width: 900px) {
+            .why-grid { grid-template-columns: 1fr; }
+        }
+        .why-card {
+            background: #151515;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 30px 25px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .why-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-5px);
+        }
+        .why-card i {
+            font-size: 2rem;
+            color: #d4af37;
+            margin-bottom: 18px;
+        }
+        .why-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            color: #f4f4f4;
+            margin-bottom: 12px;
+        }
+        .why-card p {
+            color: #999;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Testimonials */
+        .testimonial-section {
+            padding: 4rem 5% 6rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .testimonial-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .testimonial-header span {
+            color: #d4af37;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .testimonial-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #f4f4f4;
+            margin: 10px 0;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        @media (max-width: 900px) {
+            .testimonial-grid { grid-template-columns: 1fr; }
+        }
+        .testimonial-card {
+            background: #151515;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 25px;
+        }
+        .testimonial-card .stars {
+            color: #d4af37;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+        }
+        .testimonial-card p {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            font-style: italic;
+        }
+        .testimonial-name {
+            color: #d4af37;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .testimonial-role {
+            color: #777;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -27,28 +162,82 @@
         </nav>
     </header>
 
-    <section class="stats-section" style="padding-top: 5rem; min-height: 70vh;">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">Platform Impact</h2>
+    <section class="stats-section" style="padding-top: 5rem; min-height: auto;">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 1rem;">Platform Impact</h2>
+        <p class="impact-tagline">Numbers that reflect our growing community of history lovers and knowledge seekers.</p>
         <div class="stats-container">
             <div class="stat-box">
                 <i class="fas fa-book-open"></i>
-                <h3 class="counter">50+</h3>
+                <h3 class="counter" data-target="50">0+</h3>
                 <p>Articles Published</p>
             </div>
             <div class="stat-box">
                 <i class="fas fa-laptop-code"></i>
-                <h3 class="counter">100+</h3>
+                <h3 class="counter" data-target="100">0+</h3>
                 <p>% Responsive Design</p>
             </div>
             <div class="stat-box">
                 <i class="fas fa-users"></i>
-                <h3 class="counter">1000+</h3>
+                <h3 class="counter" data-target="1000">0+</h3>
                 <p>Knowledge Seekers</p>
             </div>
             <div class="stat-box">
                 <i class="fas fa-paper-plane"></i>
-                <h3 class="counter">15+</h3>
+                <h3 class="counter" data-target="15">0+</h3>
                 <p>Daily Client Outreach</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-section">
+        <div class="why-header">
+            <span>Our Promise</span>
+            <h2>Why Choose Echoes of History</h2>
+        </div>
+        <div class="why-grid">
+            <div class="why-card">
+                <i class="fas fa-brain"></i>
+                <h3>AI-Researched Accuracy</h3>
+                <p>Every article is crafted with careful research to ensure historical facts stay accurate and reliable.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-calendar-day"></i>
+                <h3>Daily Fresh Content</h3>
+                <p>New historical stories published every single day, so there's always something new to explore.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-search"></i>
+                <h3>SEO-Optimized Articles</h3>
+                <p>Content built to rank well and reach more readers, while staying easy and enjoyable to read.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonial-section">
+        <div class="testimonial-header">
+            <span>Feedback</span>
+            <h2>What Readers Say</h2>
+        </div>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <div class="stars">★★★★★</div>
+                <p>"The articles feel like real storytelling, not just dry facts. I actually enjoy reading history now."</p>
+                <div class="testimonial-name">Ahmed R.</div>
+                <div class="testimonial-role">Regular Reader</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="stars">★★★★★</div>
+                <p>"Clean design, fast loading, and the daily updates keep me coming back to check new stories."</p>
+                <div class="testimonial-name">Sara K.</div>
+                <div class="testimonial-role">History Enthusiast</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="stars">★★★★★</div>
+                <p>"Great mix of Islamic history and world history in one place. Well organized and easy to navigate."</p>
+                <div class="testimonial-name">Bilal M.</div>
+                <div class="testimonial-role">Student</div>
             </div>
         </div>
     </section>
@@ -62,5 +251,44 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Animated Counter on Scroll
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 60;
+
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                let count = 0;
+                const increment = Math.ceil(target / speed);
+
+                const update = () => {
+                    count += increment;
+                    if (count >= target) {
+                        counter.innerText = target + '+';
+                    } else {
+                        counter.innerText = count + '+';
+                        requestAnimationFrame(update);
+                        setTimeout(() => requestAnimationFrame(update), 20);
+                    }
+                };
+                update();
+            });
+        }
+
+        const statsSection = document.querySelector('.stats-section');
+        let animated = false;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animated) {
+                    animateCounters();
+                    animated = true;
+                }
+            });
+        }, { threshold: 0.3 });
+
+        if (statsSection) observer.observe(statsSection);
+    </script>
 </body>
 </html>

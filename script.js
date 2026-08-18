@@ -1,6 +1,6 @@
-// Echoes of History - Main JavaScript File (Fully Updated with blogs.json Support)
+// Echoes of History - Main JavaScript File (Fully Updated & Fixed)
 
-// Fallback Articles Data in case blogs.json fails to load
+// Fallback Articles Data in case blogs.json fails or is empty
 const fallbackArticles = [
     {
         title: "The Golden Age of Islamic Science",
@@ -38,10 +38,9 @@ async function renderArticles() {
             const data = await response.json();
             console.log("Fetched blogs.json data:", data);
             
-            if (Array.isArray(data) && data.length > 0) {
+            // Check if data is a valid array with items that actually have a title
+            if (Array.isArray(data) && data.length > 0 && data[0].title) {
                 articlesData = data;
-            } else if (data && typeof data === 'object') {
-                articlesData = [data];
             }
         } else {
             console.log("Response not OK:", response.status);
@@ -53,12 +52,12 @@ async function renderArticles() {
     container.innerHTML = articlesData.map(article => `
         <article class="article-card">
             <div class="card-img-wrapper">
-                <img src="${article.image || 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1000&q=80'}" alt="${article.title}">
+                <img src="${article.image || 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1000&q=80'}" alt="${article.title || 'History'}">
             </div>
             <div class="card-body">
-                <span class="category-tag">${article.category || 'History'}</span>
-                <h3>${article.title}</h3>
-                <p>${article.description}</p>
+                <span class="category-tag">${article.category || article.tag || 'History'}</span>
+                <h3>${article.title || 'Untitled Article'}</h3>
+                <p>${article.description || article.summary || 'Explore this historical event in detail.'}</p>
                 <a href="${article.link || 'contact.html'}" class="read-btn">
                     <span>Read Article</span> <i class="fas fa-arrow-right"></i>
                 </a>
@@ -157,4 +156,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderArticles();
     initParticles();
 });
-                          

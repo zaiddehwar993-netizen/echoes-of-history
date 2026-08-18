@@ -1,12 +1,12 @@
 import os
-import requests
-import json
 import random
 import pathlib
+import requests
+import json
+from google import genai
 
-# DeepSeek API Key from GitHub Secrets
-API_KEY = os.getenv("DEEPSEEK_API_KEY")
-URL = "https://api.deepseek.com/chat/completions"
+# Initialize Gemini Client using GitHub Secret GEMINI_API_KEY
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Wide & Highly Searched Historical Topics
 TOPICS = [
@@ -24,48 +24,34 @@ def generate_article():
     topic = selected["topic"]
     category = selected["tag"]
     
-    # Generate Relevant Pollinations AI HD Image URL
+    # Generate Pollinations AI HD Image URL
     prompt_encoded = requests.utils.quote(selected["img_prompt"])
     image_url = f"https://image.pollinations.ai/prompt/{prompt_encoded}?width=1000&height=600&nologo=true&seed={random.randint(100,999)}"
 
-    # Humanized Emotional Prompt
+    # Highly Humanized Emotional Prompt
     prompt_text = (
-        f"You are a deeply passionate human historian and master storyteller. Write a deeply moving, highly detailed, and human-like historic article about '{topic}'.\n\n"
+        f"You are a deeply passionate human historian, master storyteller, and veteran writer. Write a deeply moving, highly detailed, and completely human-like historic article about '{topic}'.\n\n"
         "STRICT HUMAN WRITING RULES:\n"
-        "1. Tone: Deeply emotional, dramatic, narrative, and engaging. Write with real human passion as if you lived through history.\n"
-        "2. FORBIDDEN AI WORDS: Never use words like 'Delve', 'In conclusion', 'Tapestry', 'Testament', 'Beacon', 'Nesting ground'. Avoid robotic summaries.\n"
-        "3. Fact Accuracy & Originality: All facts, dates, and figures must be 100% historically true and 100% unique/copyright-free.\n"
-        "4. High SEO Ranking: Structure with a single catchy <h1> title, engaging narrative <h2> subheadings, and well-spaced engaging <p> paragraphs.\n"
+        "1. Tone: Deeply emotional, dramatic, narrative, and engaging. Write with real human passion as if you lived through history yourself.\n"
+        "2. FORBIDDEN AI WORDS: Never use cliché AI words like 'Delve', 'In conclusion', 'Tapestry', 'Testament', 'Beacon', 'Nesting ground'.\n"
+        "3. Fact Accuracy & Originality: All facts, dates, and historical details must be 100% accurate and unique.\n"
+        "4. High SEO Ranking: Structure with a single catchy <h1> title, engaging narrative <h2> subheadings, and well-spaced paragraphs.\n"
         "5. Output Format: Return ONLY raw HTML code (without markdown ```html backticks)."
     )
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}"
-    }
-
-    payload = {
-        "model": "deepseek-chat",
-        "messages": [
-            {"role": "user", "content": prompt_text}
-        ],
-        "temperature": 0.7
-    }
-
     try:
-        response = requests.post(URL, headers=headers, data=json.dumps(payload), timeout=60)
-        if response.status_code == 200:
-            res_json = response.json()
-            raw_html = res_json['choices'][0]['message']['content'].strip()
-            
-            # Clean Markdown ticks if present
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt_text,
+        )
+        
+        if response and response.text:
+            raw_html = response.text.strip()
             raw_html = raw_html.replace("```html", "").replace("```", "").strip()
 
-            # Fixed Link format matching blog-detail.html?title=...
             encoded_title = requests.utils.quote(topic)
             article_link = f"blog-detail.html?title={encoded_title}"
 
-            # Save / Update blogs.json using absolute path
             blogs_file = str(pathlib.Path(__file__).parent.resolve() / "blogs.json")
             blogs_data = []
 
@@ -76,7 +62,6 @@ def generate_article():
                 except Exception:
                     blogs_data = []
 
-            # Add new blog entry at the top with matching keys
             blog_entry = {
                 "title": topic,
                 "category": category,
@@ -88,13 +73,12 @@ def generate_article():
             }
             blogs_data.insert(0, blog_entry)
 
-            # Save updated file
             with open(blogs_file, "w", encoding="utf-8") as f:
                 json.dump(blogs_data, f, indent=2, ensure_ascii=False)
 
-            print("✅ New AI Historical Blog Generated Successfully!")
+            print("✅ New Human-Like Historical Blog Generated Successfully with Gemini SDK!")
         else:
-            print(f"❌ Error from DeepSeek API: {response.status_code} - {response.text}")
+            print("❌ Empty response received from Gemini.")
     except Exception as e:
         print(f"❌ Exception occurred: {e}")
 

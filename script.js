@@ -1,4 +1,4 @@
-// Echoes of History - Main JavaScript File (Updated for Dynamic blogs.json)
+// Echoes of History - Main JavaScript File (Fully Updated with blogs.json Support)
 
 // Fallback Articles Data in case blogs.json fails to load
 const fallbackArticles = [
@@ -33,15 +33,21 @@ async function renderArticles() {
     let articlesData = fallbackArticles;
 
     try {
-        const response = await fetch('blogs.json');
+        const response = await fetch('./blogs.json');
         if (response.ok) {
             const data = await response.json();
+            console.log("Fetched blogs.json data:", data);
+            
             if (Array.isArray(data) && data.length > 0) {
                 articlesData = data;
+            } else if (data && typeof data === 'object') {
+                articlesData = [data];
             }
+        } else {
+            console.log("Response not OK:", response.status);
         }
     } catch (error) {
-        console.log('Using fallback articles due to fetch error:', error);
+        console.log('Error fetching blogs.json:', error);
     }
 
     container.innerHTML = articlesData.map(article => `
@@ -151,3 +157,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderArticles();
     initParticles();
 });
+                          

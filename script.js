@@ -1,26 +1,25 @@
-// Echoes of History - Main JavaScript File (Fully Updated & Fixed)
+// Echoes of History - Main JavaScript File (Fully Fixed & Synced)
 
-// Fallback Articles Data in case blogs.json fails or is empty
 const fallbackArticles = [
     {
         title: "The Golden Age of Islamic Science",
         category: "Islamic Era",
         description: "Discover how Muslim scholars preserved and advanced medicine, mathematics, and astronomy during Europe's Dark Ages.",
-        image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=1000&q=80",
+        image: "[https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=1000&q=80)",
         link: "contact.html"
     },
     {
         title: "The Rise & Secrets of Ancient Egypt",
         category: "Ancient Civilizations",
         description: "An exploration into the architectural marvels, pharaohs, and engineering behind the Great Pyramids and ancient temples.",
-        image: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80",
+        image: "[https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80)",
         link: "contact.html"
     },
     {
         title: "Ottoman Empire: Architecture & Legacy",
         category: "Ottoman History",
         description: "Unveiling the diplomatic power, grand domes, and architectural genius of Mimar Sinan and Hagia Sophia.",
-        image: "https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1000&q=80",
+        image: "[https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1000&q=80)",
         link: "contact.html"
     }
 ];
@@ -36,14 +35,9 @@ async function renderArticles() {
         const response = await fetch('./blogs.json');
         if (response.ok) {
             const data = await response.json();
-            console.log("Fetched blogs.json data:", data);
-            
-            // Check if data is a valid array with items that actually have a title
             if (Array.isArray(data) && data.length > 0 && data[0].title) {
                 articlesData = data;
             }
-        } else {
-            console.log("Response not OK:", response.status);
         }
     } catch (error) {
         console.log('Error fetching blogs.json:', error);
@@ -52,7 +46,7 @@ async function renderArticles() {
     container.innerHTML = articlesData.map(article => `
         <article class="article-card">
             <div class="card-img-wrapper">
-                <img src="${article.image || 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1000&q=80'}" alt="${article.title || 'History'}">
+                <img src="${article.image || '[https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1000&q=80)'}" alt="${article.title || 'History'}">
             </div>
             <div class="card-body">
                 <span class="category-tag">${article.category || article.tag || 'History'}</span>
@@ -87,7 +81,7 @@ function filterArticles() {
     });
 }
 
-// Background Particle Canvas Animation (If Hero Canvas Exists)
+// Background Particle Canvas Animation
 function initParticles() {
     const canvas = document.getElementById('particlesCanvas');
     if (!canvas) return;
@@ -151,7 +145,6 @@ function initParticles() {
     });
 }
 
-// Document Load Event Initialization
 document.addEventListener('DOMContentLoaded', () => {
     renderArticles();
     initParticles();

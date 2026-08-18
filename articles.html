@@ -14,13 +14,84 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <style>
-        .search-box input:focus {
+        /* ===== Premium Search Bar ===== */
+        .search-box-pro {
+            position: relative;
+            max-width: 420px;
+            width: 100%;
+        }
+        .search-box-pro .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d4af37;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        .search-box-pro input {
+            width: 100%;
+            background: linear-gradient(145deg, #131313, #0e0e0e);
+            border: 1px solid #2a2a2a;
+            color: #f4f4f4;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            padding: 14px 46px 14px 46px;
+            border-radius: 50px;
+            transition: all 0.35s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .search-box-pro input::placeholder {
+            color: #777;
+        }
+        .search-box-pro input:hover {
+            border-color: #444;
+        }
+        .search-box-pro input:focus {
             outline: none;
             border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.12), 0 4px 18px rgba(212, 175, 55, 0.15);
+            background: #151515;
         }
-        .search-box input {
-            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        .search-box-pro input:focus + .search-icon,
+        .search-box-pro.has-text .search-icon {
+            color: #f0c94a;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .search-clear-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: none;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .search-clear-btn:hover {
+            color: #d4af37;
+        }
+        .search-box-pro.has-text .search-clear-btn {
+            display: block;
+        }
+        .search-result-count {
+            font-size: 0.78rem;
+            color: #888;
+            margin-top: 8px;
+            padding-left: 20px;
+            min-height: 16px;
+        }
+        .search-result-count strong {
+            color: #d4af37;
+        }
+
+        @media (max-width: 600px) {
+            .search-box-pro { max-width: 100%; }
         }
 
         /* Category Filter Pills */
@@ -91,7 +162,6 @@
             color: #d4af37;
         }
 
-        /* Grid responsiveness (in case not already defined in style.css) */
         .articles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -125,10 +195,15 @@
     <section class="articles-container" style="padding-top: 4rem; padding-bottom: 4rem;">
         <div class="section-header">
             <h2 class="section-title">Historical Chronicles</h2>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Search articles...">
+            <div class="search-box-pro" id="searchBoxPro">
+                <i class="fas fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search by title, era, or topic...">
+                <button class="search-clear-btn" id="searchClearBtn" type="button" aria-label="Clear search">
+                    <i class="fas fa-xmark"></i>
+                </button>
             </div>
         </div>
+        <div class="search-result-count" id="searchResultCount"></div>
 
         <div class="category-filters" id="categoryFilters">
             <button class="filter-pill active" data-category="all">All</button>
@@ -182,6 +257,7 @@
 
         function renderGrid() {
             const grid = document.getElementById('articlesGrid');
+            const countBox = document.getElementById('searchResultCount');
             const query = currentSearch.toLowerCase();
 
             let filtered = allArticles.filter(article => {
@@ -194,12 +270,18 @@
                 return matchesCategory && matchesSearch;
             });
 
+            if (query) {
+                countBox.innerHTML = `<strong>${filtered.length}</strong> result${filtered.length !== 1 ? 's' : ''} found`;
+            } else {
+                countBox.innerHTML = '';
+            }
+
             if (filtered.length === 0) {
                 grid.innerHTML = `<div class="articles-status"><i class="fas fa-magnifying-glass"></i> No articles found. Try a different search or category.</div>`;
                 return;
             }
 
-            grid.innerHTML = filtered.map((article, index) => {
+            grid.innerHTML = filtered.map((article) => {
                 const isNew = allArticles.indexOf(article) === 0;
                 const readingTime = estimateReadingTime(article.content);
                 return `
@@ -240,9 +322,22 @@
             }
         }
 
-        document.getElementById('searchInput').addEventListener('input', (e) => {
+        const searchInput = document.getElementById('searchInput');
+        const searchBoxPro = document.getElementById('searchBoxPro');
+        const searchClearBtn = document.getElementById('searchClearBtn');
+
+        searchInput.addEventListener('input', (e) => {
             currentSearch = e.target.value;
+            searchBoxPro.classList.toggle('has-text', currentSearch.length > 0);
             renderGrid();
+        });
+
+        searchClearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            currentSearch = '';
+            searchBoxPro.classList.remove('has-text');
+            renderGrid();
+            searchInput.focus();
         });
 
         document.addEventListener('DOMContentLoaded', loadArticlesPage);

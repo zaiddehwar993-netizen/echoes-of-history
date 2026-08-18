@@ -61,7 +61,7 @@ def generate_article():
             # Clean Markdown ticks if present
             raw_html = raw_html.replace("```html", "").replace("```", "").strip()
 
-            # Dynamic link pointing to blog-detail.html with the article title
+            # Fixed Link format matching blog-detail.html?title=...
             encoded_title = requests.utils.quote(topic)
             article_link = f"blog-detail.html?title={encoded_title}"
 
@@ -76,10 +76,11 @@ def generate_article():
                 except Exception:
                     blogs_data = []
 
-            # Add new blog at top
+            # Add new blog entry at the top with matching keys
             blog_entry = {
                 "title": topic,
                 "category": category,
+                "summary": f"An emotional and deeply researched exploration into {topic}.",
                 "description": f"An emotional and deeply researched exploration into {topic}.",
                 "image": image_url,
                 "content": raw_html,

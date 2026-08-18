@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Articles - Echoes of History</title>
+    <meta name="description" content="Explore historical chronicles - from ancient empires to Islamic Golden Age scholars. Search and browse articles by category.">
     <link rel="stylesheet" href="style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,6 +12,100 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
+
+    <style>
+        .search-box input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+        .search-box input {
+            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        /* Category Filter Pills */
+        .category-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .filter-pill {
+            background: #151515;
+            border: 1px solid #2a2a2a;
+            color: #ccc;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+        .filter-pill:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+        .filter-pill.active {
+            background: #d4af37;
+            color: #0a0a0a;
+            border-color: #d4af37;
+            font-weight: 600;
+        }
+
+        /* NEW badge */
+        .new-badge {
+            display: inline-block;
+            background: #d4af37;
+            color: #0a0a0a;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        /* Reading time */
+        .reading-time {
+            color: #888;
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        /* Loading / Empty state */
+        .articles-status {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #888;
+            padding: 3rem 1rem;
+            font-size: 0.95rem;
+        }
+        .articles-status i {
+            display: block;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: #d4af37;
+        }
+
+        /* Grid responsiveness (in case not already defined in style.css) */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .category-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 6px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -31,52 +126,16 @@
         <div class="section-header">
             <h2 class="section-title">Historical Chronicles</h2>
             <div class="search-box">
-                <input type="text" id="searchInput" onkeyup="filterArticles()" placeholder="🔍 Search articles...">
+                <input type="text" id="searchInput" placeholder="🔍 Search articles...">
             </div>
         </div>
-        
-        <div class="articles-grid">
-            <article class="article-card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=800&q=80" alt="Islamic Science">
-                </div>
-                <div class="card-body">
-                    <span class="category-tag">Islamic Era</span>
-                    <h3>The Golden Age of Islamic Science</h3>
-                    <p>Discover how Muslim scholars preserved knowledge, invented algebra, and revolutionized astronomy and medicine.</p>
-                    <a href="contact.html" class="read-btn">
-                        <span>Read Article</span> <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </article>
 
-            <article class="article-card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=800&q=80" alt="Ottoman Architecture">
-                </div>
-                <div class="card-body">
-                    <span class="category-tag">Ottoman History</span>
-                    <h3>Ottoman Empire: Architecture & Legacy</h3>
-                    <p>Unveiling diplomatic mastery, grand domes, and architectural marvels crafted under Sultanate rule.</p>
-                    <a href="contact.html" class="read-btn">
-                        <span>Read Article</span> <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </article>
+        <div class="category-filters" id="categoryFilters">
+            <button class="filter-pill active" data-category="all">All</button>
+        </div>
 
-            <article class="article-card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=800&q=80" alt="Pyramids">
-                </div>
-                <div class="card-body">
-                    <span class="category-tag">Ancient World</span>
-                    <h3>Ancient Egyptian Wonders</h3>
-                    <p>Exploring architectural secrets of the Pyramids, Pharaohs, and ancient engineering achievements.</p>
-                    <a href="contact.html" class="read-btn">
-                        <span>Read Article</span> <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </article>
+        <div class="articles-grid" id="articlesGrid">
+            <div class="articles-status"><i class="fas fa-spinner fa-spin"></i> Loading articles...</div>
         </div>
     </section>
 
@@ -89,5 +148,104 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        let allArticles = [];
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        function estimateReadingTime(content) {
+            if (!content) return 3;
+            const text = content.replace(/<[^>]*>/g, ' ');
+            const words = text.trim().split(/\s+/).length;
+            return Math.max(1, Math.ceil(words / 200));
+        }
+
+        function buildCategoryFilters() {
+            const filterBox = document.getElementById('categoryFilters');
+            const categories = new Set();
+            allArticles.forEach(a => categories.add(a.category || a.tag || 'History'));
+
+            filterBox.innerHTML = '<button class="filter-pill active" data-category="all">All</button>' +
+                Array.from(categories).map(cat =>
+                    `<button class="filter-pill" data-category="${cat}">${cat}</button>`
+                ).join('');
+
+            filterBox.querySelectorAll('.filter-pill').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBox.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.getAttribute('data-category');
+                    renderGrid();
+                });
+            });
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('articlesGrid');
+            const query = currentSearch.toLowerCase();
+
+            let filtered = allArticles.filter(article => {
+                const cat = article.category || article.tag || 'History';
+                const matchesCategory = currentCategory === 'all' || cat === currentCategory;
+                const matchesSearch = !query ||
+                    (article.title || '').toLowerCase().includes(query) ||
+                    cat.toLowerCase().includes(query) ||
+                    (article.description || article.summary || '').toLowerCase().includes(query);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="articles-status"><i class="fas fa-magnifying-glass"></i> No articles found. Try a different search or category.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map((article, index) => {
+                const isNew = allArticles.indexOf(article) === 0;
+                const readingTime = estimateReadingTime(article.content);
+                return `
+                <article class="article-card">
+                    <div class="card-img-wrapper">
+                        <img src="${article.image}" alt="${article.title}" loading="lazy">
+                    </div>
+                    <div class="card-body">
+                        <span class="category-tag">${article.category || article.tag || 'History'}</span>
+                        <h3>${article.title}${isNew ? '<span class="new-badge">NEW</span>' : ''}</h3>
+                        <p>${article.description || article.summary || 'Explore this historical event in detail.'}</p>
+                        <div class="reading-time"><i class="far fa-clock"></i> ${readingTime} min read</div>
+                        <a href="${article.link || 'blog-detail.html'}" class="read-btn">
+                            <span>Read Article</span> <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>`;
+            }).join('');
+        }
+
+        async function loadArticlesPage() {
+            const grid = document.getElementById('articlesGrid');
+            try {
+                const response = await fetch('./blogs.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        allArticles = data;
+                        buildCategoryFilters();
+                        renderGrid();
+                        return;
+                    }
+                }
+                grid.innerHTML = `<div class="articles-status"><i class="fas fa-book"></i> No articles published yet. Check back soon!</div>`;
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                grid.innerHTML = `<div class="articles-status"><i class="fas fa-triangle-exclamation"></i> Unable to load articles right now.</div>`;
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderGrid();
+        });
+
+        document.addEventListener('DOMContentLoaded', loadArticlesPage);
+    </script>
 </body>
 </html>

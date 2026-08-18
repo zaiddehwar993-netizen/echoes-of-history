@@ -40,10 +40,11 @@ def generate_article():
     )
 
     try:
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
+                response = client.models.generate_content(
+            model='gemini-1.5-flash',
             contents=prompt_text,
-        )
+                )
+        
         
         if response and response.text:
             raw_html = response.text.strip()

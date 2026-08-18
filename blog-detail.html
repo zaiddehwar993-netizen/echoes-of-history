@@ -358,47 +358,77 @@
         let allBlogsGlobal = [];
         let currentFontSize = 1.1;
 
+        function showLoadError(message) {
+            const box = document.getElementById('article-body');
+            box.innerHTML = `<div style="border:1px solid #d4af37; border-radius:8px; padding:16px; color:#f4f4f4;">
+                <strong style="color:#d4af37;">Could not load this article.</strong><br>
+                <span style="color:#aaa; font-size:0.9rem;">Reason: ${message}</span>
+            </div>`;
+            document.getElementById('article-title').textContent = 'Article not found';
+        }
+
         async function loadSingleArticle() {
             const urlParams = new URLSearchParams(window.location.search);
             const articleTitle = urlParams.get('title');
 
             try {
                 const response = await fetch('blogs.json');
-                if (response.ok) {
-                    const blogs = await response.json();
-                    allBlogsGlobal = blogs;
+                if (!response.ok) {
+                    showLoadError('blogs.json could not be fetched (HTTP ' + response.status + '). Check the file exists at the site root.');
+                    return;
+                }
 
-                    let currentBlog = blogs[0];
-                    if (articleTitle) {
-                        const found = blogs.find(b => b.title.toLowerCase() === decodeURIComponent(articleTitle).toLowerCase());
-                        if (found) currentBlog = found;
-                    }
+                const blogs = await response.json();
+                if (!Array.isArray(blogs) || blogs.length === 0) {
+                    showLoadError('blogs.json loaded but has no articles in it.');
+                    return;
+                }
+                allBlogsGlobal = blogs;
 
-                    if (currentBlog) {
-                        currentBlogGlobal = currentBlog;
-                        renderArticle(currentBlog, blogs);
+                let currentBlog = blogs[0];
+                if (articleTitle) {
+                    const found = blogs.find(b => (b.title || '').toLowerCase() === decodeURIComponent(articleTitle).toLowerCase());
+                    if (found) {
+                        currentBlog = found;
+                    } else {
+                        showLoadError('No article in blogs.json matches the title "' + decodeURIComponent(articleTitle) + '".');
+                        return;
                     }
                 }
+
+                currentBlogGlobal = currentBlog;
+                renderArticle(currentBlog, blogs);
             } catch (error) {
                 console.error("Error loading article detail:", error);
-                document.getElementById('article-body').innerHTML = "<p>Failed to load the article content.</p>";
+                showLoadError(error.message || 'Unknown JavaScript error while loading the article.');
             }
         }
 
         function renderArticle(currentBlog, blogs) {
-            // Title & meta tags
-            document.title = currentBlog.title + " - Echoes of History";
-            document.getElementById('page-title').textContent = currentBlog.title + " - Echoes of History";
-            document.getElementById('article-title').textContent = currentBlog.title;
-            document.getElementById('article-category').textContent = currentBlog.category || currentBlog.tag || 'History';
-            document.getElementById('article-image').src = currentBlog.image;
-            document.getElementById('breadcrumb-current').textContent = currentBlog.title;
+            // Flexible field lookup — works whichever field names your blogs.json uses
+            const title = currentBlog.title || 'Untitled Article';
+            const bodyText = currentBlog.content || currentBlog.body || currentBlog.text || currentBlog.description || '';
+            const imageUrl = currentBlog.image || currentBlog.img || currentBlog.thumbnail || currentBlog.imageUrl || '';
+            const categoryText = currentBlog.category || currentBlog.tag || currentBlog.categoryName || 'History';
 
-            const desc = (currentBlog.description || currentBlog.excerpt || currentBlog.content || '').replace(/<[^>]*>/g, '').slice(0, 155);
+            if (!bodyText) {
+                showLoadError('This article has no readable content field in blogs.json (expected "content", "body", or "text").');
+                return;
+            }
+
+            // Title & meta tags
+            document.title = title + " - Echoes of History";
+            document.getElementById('page-title').textContent = title + " - Echoes of History";
+            document.getElementById('article-title').textContent = title;
+            document.getElementById('article-category').textContent = categoryText;
+            document.getElementById('article-image').src = imageUrl;
+            document.getElementById('breadcrumb-current').textContent = title;
+
+            const desc = (currentBlog.description || currentBlog.excerpt || bodyText || '').replace(/<[^>]*>/g, '').slice(0, 155);
             document.getElementById('meta-description').setAttribute('content', desc);
-            document.getElementById('og-title').setAttribute('content', currentBlog.title);
+            document.getElementById('og-title').setAttribute('content', title);
             document.getElementById('og-description').setAttribute('content', desc);
-            document.getElementById('og-image').setAttribute('content', currentBlog.image || '');
+            document.getElementById('og-image').setAttribute('content', imageUrl);
 
             // Date
             const dateStr = currentBlog.date || currentBlog.publishedDate;
@@ -407,10 +437,10 @@
             // Body content
             const bodyBox = document.getElementById('article-body');
             let contentHTML;
-            if (currentBlog.content.includes('<p>') || currentBlog.content.includes('<h2>')) {
-                contentHTML = currentBlog.content;
+            if (bodyText.includes('<p>') || bodyText.includes('<h2>')) {
+                contentHTML = bodyText;
             } else {
-                contentHTML = `<p>${currentBlog.content.replace(/\n\n/g, '</p><p>')}</p>`;
+                contentHTML = `<p>${bodyText.replace(/\n\n/g, '</p><p>')}</p>`;
             }
             bodyBox.innerHTML = contentHTML;
 
@@ -481,4 +511,119 @@
         function buildRelatedArticles(currentBlog, blogs) {
             const cat = currentBlog.category || currentBlog.tag;
             const related = blogs.filter(b => b.title !== currentBlog.title && (b.category || b.tag) === cat).slice(0, 3);
-            const finalList = related.length > 0 ? related 
+            const finalList = related.length > 0 ? related : blogs.filter(b => b.title !== currentBlog.title).slice(0, 3);
+
+            if (finalList.length === 0) return;
+
+            const grid = document.getElementById('related-grid');
+            grid.innerHTML = '';
+            finalList.forEach(b => {
+                const bImage = b.image || b.img || b.thumbnail || b.imageUrl || '';
+                const a = document.createElement('a');
+                a.className = 'related-card';
+                a.href = 'blog-detail.html?title=' + encodeURIComponent(b.title || '');
+                a.innerHTML = `
+                    <img src="${bImage}" alt="${b.title || ''}">
+                    <div class="related-card-body">
+                        <div class="related-card-cat">${b.category || b.tag || 'History'}</div>
+                        <div class="related-card-title">${b.title || 'Untitled'}</div>
+                    </div>
+                `;
+                grid.appendChild(a);
+            });
+            document.getElementById('related-articles').style.display = 'block';
+        }
+
+        function buildPrevNext(currentBlog, blogs) {
+            const index = blogs.findIndex(b => b.title === currentBlog.title);
+            const prev = index > 0 ? blogs[index - 1] : null;
+            const next = index < blogs.length - 1 ? blogs[index + 1] : null;
+            const nav = document.getElementById('prev-next-nav');
+
+            let html = '';
+            if (prev) {
+                html += `<a class="prev-link" href="blog-detail.html?title=${encodeURIComponent(prev.title)}">
+                    <span class="nav-label"><i class="fa-solid fa-arrow-left"></i> Previous</span>${prev.title}
+                </a>`;
+            } else {
+                html += `<span></span>`;
+            }
+            if (next) {
+                html += `<a class="next-link" href="blog-detail.html?title=${encodeURIComponent(next.title)}">
+                    <span class="nav-label">Next <i class="fa-solid fa-arrow-right"></i></span>${next.title}
+                </a>`;
+            }
+            nav.innerHTML = html;
+        }
+
+        // Reading progress bar
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('reading-progress-bar').style.width = progress + '%';
+
+            const backToTop = document.getElementById('back-to-top');
+            backToTop.style.display = scrollTop > 400 ? 'flex' : 'none';
+        });
+
+        document.getElementById('back-to-top').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Font size controls
+        document.getElementById('font-increase').addEventListener('click', function() {
+            if (currentFontSize < 1.6) {
+                currentFontSize += 0.1;
+                document.getElementById('article-body').style.fontSize = currentFontSize + 'rem';
+            }
+        });
+        document.getElementById('font-decrease').addEventListener('click', function() {
+            if (currentFontSize > 0.9) {
+                currentFontSize -= 0.1;
+                document.getElementById('article-body').style.fontSize = currentFontSize + 'rem';
+            }
+        });
+
+        // Translate widget toggle
+        document.getElementById('translate-toggle').addEventListener('click', function() {
+            document.getElementById('translate-dropdown').classList.toggle('open');
+        });
+        document.addEventListener('click', function(e) {
+            const widget = document.getElementById('translate-widget');
+            if (!widget.contains(e.target)) {
+                document.getElementById('translate-dropdown').classList.remove('open');
+            }
+        });
+
+        document.querySelectorAll('#translate-dropdown button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                triggerGoogleTranslate(lang);
+                document.getElementById('translate-dropdown').classList.remove('open');
+            });
+        });
+
+        function triggerGoogleTranslate(lang) {
+            const select = document.querySelector('#google_translate_element select.goog-te-combo');
+            if (select) {
+                select.value = lang;
+                select.dispatchEvent(new Event('change'));
+            } else {
+                setTimeout(() => triggerGoogleTranslate(lang), 500);
+            }
+        }
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ur,hi,zh-CN,es,ar,fr,pt,ru,bn',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSingleArticle);
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

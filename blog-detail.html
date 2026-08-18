@@ -3,11 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Detail - Echoes of History</title>
+    <title id="page-title">Article Detail - Echoes of History</title>
+    <meta id="meta-description" name="description" content="Read historical chronicles on Echoes of History.">
+
+    <!-- Open Graph / Social Share Preview -->
+    <meta id="og-title" property="og:title" content="Echoes of History">
+    <meta id="og-description" property="og:description" content="Read historical chronicles on Echoes of History.">
+    <meta id="og-image" property="og:image" content="">
+    <meta id="og-type" property="og:type" content="article">
+    <meta id="twitter-card" name="twitter:card" content="summary_large_image">
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ---------- Reading progress bar ---------- */
+        #reading-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 0%;
+            background: linear-gradient(90deg, #d4af37, #f4e5a1);
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+        }
+
+        /* ---------- Breadcrumbs ---------- */
+        .breadcrumbs {
+            max-width: 800px;
+            margin: 90px auto 0 auto;
+            padding: 0 20px;
+            font-size: 0.85rem;
+            color: #999;
+        }
+        .breadcrumbs a { color: #d4af37; text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+
+        /* ---------- Article meta row ---------- */
+        .article-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin: 14px 0 24px 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        .article-meta-row span { display: flex; align-items: center; gap: 6px; }
+
+        /* ---------- Font size controls ---------- */
+        .font-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin: 10px 0 20px 0;
+        }
+        .font-controls button {
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            border-radius: 6px;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .font-controls button:hover { background: #d4af37; color: #000; }
+
+        /* ---------- Table of contents ---------- */
+        #table-of-contents {
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            border-left: 3px solid #d4af37;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px 0 30px 0;
+        }
+        #table-of-contents h3 {
+            color: #d4af37;
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #table-of-contents ul { list-style: none; margin: 0; padding: 0; }
+        #table-of-contents li { margin: 6px 0; }
+        #table-of-contents a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        #table-of-contents a:hover { color: #d4af37; }
+
+        /* ---------- Share buttons ---------- */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .share-buttons a, .share-buttons button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        .share-whatsapp { background: #25D366; }
+        .share-twitter { background: #000; border: 1px solid #444 !important; }
+        .share-facebook { background: #1877F2; }
+        .share-copy { background: #333; }
+        .share-copy.copied { background: #d4af37; color: #000; }
+
+        /* ---------- Related articles ---------- */
+        .related-articles {
+            max-width: 800px;
+            margin: 60px auto 0 auto;
+            padding: 0 20px;
+        }
+        .related-articles h3 {
+            color: #d4af37;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .related-card {
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+            text-decoration: none;
+            color: #f4f4f4;
+            transition: transform 0.2s;
+        }
+        .related-card:hover { transform: translateY(-4px); border-color: #d4af37; }
+        .related-card img { width: 100%; height: 110px; object-fit: cover; }
+        .related-card .related-card-body { padding: 12px; }
+        .related-card .related-card-cat { color: #d4af37; font-size: 0.7rem; text-transform: uppercase; }
+        .related-card .related-card-title { font-size: 0.95rem; margin-top: 6px; line-height: 1.3; }
+
+        /* ---------- Prev / Next navigation ---------- */
+        .prev-next-nav {
+            max-width: 800px;
+            margin: 50px auto 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            border-top: 1px solid #2a2a2a;
+            border-bottom: 1px solid #2a2a2a;
+            flex-wrap: wrap;
+        }
+        .prev-next-nav a {
+            flex: 1;
+            min-width: 140px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 14px;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+        .prev-next-nav a:hover { border-color: #d4af37; }
+        .prev-next-nav .nav-label { color: #d4af37; font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .prev-next-nav .next-link { text-align: right; }
+
+        /* ---------- Back to top ---------- */
+        #back-to-top {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #d4af37;
+            color: #000;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 998;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* ---------- Google Translate widget ---------- */
+        #google_translate_element { display: none; }
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0 !important; }
+        #translate-widget {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            z-index: 998;
+        }
+        #translate-toggle {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #141414;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        #translate-dropdown {
+            display: none;
+            position: absolute;
+            bottom: 56px;
+            left: 0;
+            background: #141414;
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            padding: 8px;
+            min-width: 170px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+        #translate-dropdown.open { display: block; }
+        #translate-dropdown button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #f4f4f4;
+            padding: 9px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        #translate-dropdown button:hover { background: #2a2a2a; color: #d4af37; }
+
+        @media (max-width: 600px) {
+            .article-detail-container { padding: 90px 16px !important; }
+            #article-title { font-size: 1.8rem !important; }
+            .breadcrumbs { margin-top: 80px; }
+            .prev-next-nav { flex-direction: column; }
+            .prev-next-nav .next-link { text-align: left; }
+        }
+    </style>
 </head>
 <body>
+
+    <div id="reading-progress-bar"></div>
+
     <!-- Header / Navbar -->
     <header class="header">
         <div class="logo">ECHOES OF HISTORY</div>
@@ -19,19 +277,76 @@
         </nav>
     </header>
 
+    <nav class="breadcrumbs">
+        <a href="index.html">Home</a> &raquo; <a href="articles.html">Articles</a> &raquo; <span id="breadcrumb-current">Article</span>
+    </nav>
+
     <!-- Main Article Content Section -->
-    <main class="article-detail-container" style="padding: 100px 20px; max-width: 800px; margin: 0 auto; color: #f4f4f4;">
+    <main class="article-detail-container" style="padding: 30px 20px 100px 20px; max-width: 800px; margin: 0 auto; color: #f4f4f4;">
         <div id="article-content-box">
             <h1 id="article-title" style="font-size: 2.5rem; margin-bottom: 15px; color: #d4af37;">Loading Article...</h1>
-            <span id="article-category" class="category-tag" style="display: inline-block; margin-bottom: 20px;">History</span>
-            <div class="card-img-wrapper" style="margin-bottom: 30px; border-radius: 10px; overflow: hidden;">
+            <span id="article-category" class="category-tag" style="display: inline-block;">History</span>
+
+            <div class="article-meta-row">
+                <span><i class="fa-regular fa-calendar"></i> <span id="article-date">--</span></span>
+                <span><i class="fa-regular fa-clock"></i> <span id="article-read-time">-- min read</span></span>
+                <span><i class="fa-regular fa-user"></i> <span id="article-author">Echoes of History Team</span></span>
+            </div>
+
+            <div class="font-controls">
+                <span style="color:#888; font-size:0.85rem;">Text size:</span>
+                <button id="font-decrease" title="Decrease text size">A-</button>
+                <button id="font-increase" title="Increase text size">A+</button>
+            </div>
+
+            <div class="card-img-wrapper" style="margin-bottom: 20px; border-radius: 10px; overflow: hidden;">
                 <img id="article-image" src="" alt="Article Image" style="width: 100%; height: auto; display: block;">
             </div>
+
+            <div id="table-of-contents" style="display:none;">
+                <h3><i class="fa-solid fa-list"></i> In this article</h3>
+                <ul id="toc-list"></ul>
+            </div>
+
             <div id="article-body" style="line-height: 1.8; font-size: 1.1rem;">
                 <p>Please wait while we load your historical story...</p>
             </div>
+
+            <div class="share-buttons">
+                <a class="share-whatsapp" id="share-whatsapp" href="#" target="_blank" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a class="share-twitter" id="share-twitter" href="#" target="_blank" title="Share on X"><i class="fa-brands fa-x-twitter"></i></a>
+                <a class="share-facebook" id="share-facebook" href="#" target="_blank" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <button class="share-copy" id="share-copy" title="Copy link"><i class="fa-solid fa-link"></i></button>
+            </div>
         </div>
     </main>
+
+    <div class="prev-next-nav" id="prev-next-nav"></div>
+
+    <section class="related-articles" id="related-articles" style="display:none;">
+        <h3><i class="fa-solid fa-book"></i> Related Articles</h3>
+        <div class="related-grid" id="related-grid"></div>
+    </section>
+
+    <button id="back-to-top" title="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- Google Translate (free, no API key) -->
+    <div id="google_translate_element"></div>
+    <div id="translate-widget">
+        <button id="translate-toggle" title="Translate this page"><i class="fa-solid fa-language"></i></button>
+        <div id="translate-dropdown">
+            <button data-lang="en"><i class="fa-solid fa-globe"></i> English</button>
+            <button data-lang="ur"><i class="fa-solid fa-globe"></i> اردو (Urdu)</button>
+            <button data-lang="hi"><i class="fa-solid fa-globe"></i> हिन्दी (Hindi)</button>
+            <button data-lang="zh-CN"><i class="fa-solid fa-globe"></i> 中文 (Chinese)</button>
+            <button data-lang="es"><i class="fa-solid fa-globe"></i> Español</button>
+            <button data-lang="ar"><i class="fa-solid fa-globe"></i> العربية (Arabic)</button>
+            <button data-lang="fr"><i class="fa-solid fa-globe"></i> Français</button>
+            <button data-lang="pt"><i class="fa-solid fa-globe"></i> Português</button>
+            <button data-lang="ru"><i class="fa-solid fa-globe"></i> Русский</button>
+            <button data-lang="bn"><i class="fa-solid fa-globe"></i> বাংলা (Bengali)</button>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer style="text-align: center; padding: 20px; color: #888;">
@@ -39,6 +354,10 @@
     </footer>
 
     <script>
+        let currentBlogGlobal = null;
+        let allBlogsGlobal = [];
+        let currentFontSize = 1.1;
+
         async function loadSingleArticle() {
             const urlParams = new URLSearchParams(window.location.search);
             const articleTitle = urlParams.get('title');
@@ -47,8 +366,8 @@
                 const response = await fetch('blogs.json');
                 if (response.ok) {
                     const blogs = await response.json();
-                    
-                    // Match article by title or pick the first one if no param
+                    allBlogsGlobal = blogs;
+
                     let currentBlog = blogs[0];
                     if (articleTitle) {
                         const found = blogs.find(b => b.title.toLowerCase() === decodeURIComponent(articleTitle).toLowerCase());
@@ -56,18 +375,8 @@
                     }
 
                     if (currentBlog) {
-                        document.title = currentBlog.title + " - Echoes of History";
-                        document.getElementById('article-title').textContent = currentBlog.title;
-                        document.getElementById('article-category').textContent = currentBlog.category || currentBlog.tag || 'History';
-                        document.getElementById('article-image').src = currentBlog.image;
-                        
-                        // Check if content is HTML or plain text
-                        const bodyBox = document.getElementById('article-body');
-                        if (currentBlog.content.includes('<p>') || currentBlog.content.includes('<h2>')) {
-                            bodyBox.innerHTML = currentBlog.content;
-                        } else {
-                            bodyBox.innerHTML = `<p>${currentBlog.content.replace(/\n\n/g, '</p><p>')}</p>`;
-                        }
+                        currentBlogGlobal = currentBlog;
+                        renderArticle(currentBlog, blogs);
                     }
                 }
             } catch (error) {
@@ -76,8 +385,100 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadSingleArticle);
-    </script>
-</body>
-</html>
+        function renderArticle(currentBlog, blogs) {
+            // Title & meta tags
+            document.title = currentBlog.title + " - Echoes of History";
+            document.getElementById('page-title').textContent = currentBlog.title + " - Echoes of History";
+            document.getElementById('article-title').textContent = currentBlog.title;
+            document.getElementById('article-category').textContent = currentBlog.category || currentBlog.tag || 'History';
+            document.getElementById('article-image').src = currentBlog.image;
+            document.getElementById('breadcrumb-current').textContent = currentBlog.title;
 
+            const desc = (currentBlog.description || currentBlog.excerpt || currentBlog.content || '').replace(/<[^>]*>/g, '').slice(0, 155);
+            document.getElementById('meta-description').setAttribute('content', desc);
+            document.getElementById('og-title').setAttribute('content', currentBlog.title);
+            document.getElementById('og-description').setAttribute('content', desc);
+            document.getElementById('og-image').setAttribute('content', currentBlog.image || '');
+
+            // Date
+            const dateStr = currentBlog.date || currentBlog.publishedDate;
+            document.getElementById('article-date').textContent = dateStr ? new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Recently published';
+
+            // Body content
+            const bodyBox = document.getElementById('article-body');
+            let contentHTML;
+            if (currentBlog.content.includes('<p>') || currentBlog.content.includes('<h2>')) {
+                contentHTML = currentBlog.content;
+            } else {
+                contentHTML = `<p>${currentBlog.content.replace(/\n\n/g, '</p><p>')}</p>`;
+            }
+            bodyBox.innerHTML = contentHTML;
+
+            // Reading time (based on plain text word count)
+            const plainText = bodyBox.textContent || '';
+            const wordCount = plainText.trim().split(/\s+/).length;
+            const readTime = Math.max(1, Math.ceil(wordCount / 200));
+            document.getElementById('article-read-time').textContent = readTime + ' min read';
+
+            // Table of contents from h2/h3 inside article body
+            buildTableOfContents(bodyBox);
+
+            // Share buttons
+            setupShareButtons(currentBlog);
+
+            // Related articles
+            buildRelatedArticles(currentBlog, blogs);
+
+            // Prev / Next
+            buildPrevNext(currentBlog, blogs);
+        }
+
+        function buildTableOfContents(bodyBox) {
+            const headings = bodyBox.querySelectorAll('h2, h3');
+            const tocBox = document.getElementById('table-of-contents');
+            const tocList = document.getElementById('toc-list');
+            tocList.innerHTML = '';
+
+            if (headings.length < 2) {
+                tocBox.style.display = 'none';
+                return;
+            }
+
+            headings.forEach((heading, i) => {
+                const id = 'section-' + i;
+                heading.id = id;
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#' + id;
+                a.textContent = heading.textContent;
+                li.appendChild(a);
+                tocList.appendChild(li);
+            });
+            tocBox.style.display = 'block';
+        }
+
+        function setupShareButtons(currentBlog) {
+            const url = window.location.href;
+            const title = currentBlog.title;
+
+            document.getElementById('share-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(title + ' - ' + url)}`;
+            document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+            document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+
+            document.getElementById('share-copy').addEventListener('click', function() {
+                navigator.clipboard.writeText(url).then(() => {
+                    const btn = document.getElementById('share-copy');
+                    btn.classList.add('copied');
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = '<i class="fa-solid fa-link"></i>';
+                    }, 1800);
+                });
+            });
+        }
+
+        function buildRelatedArticles(currentBlog, blogs) {
+            const cat = currentBlog.category || currentBlog.tag;
+            const related = blogs.filter(b => b.title !== currentBlog.title && (b.category || b.tag) === cat).slice(0, 3);
+            const finalList = related.length > 0 ? related 

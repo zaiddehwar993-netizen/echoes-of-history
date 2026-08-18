@@ -60,6 +60,10 @@ def generate_article():
             # Clean Markdown ticks if present
             raw_html = raw_html.replace("```html", "").replace("```", "").strip()
 
+            # Dynamic link pointing to blog-detail.html with the article title
+            encoded_title = requests.utils.quote(topic)
+            article_link = f"blog-detail.html?title={encoded_title}"
+
             # Save / Update blogs.json
             blog_entry = {
                 "title": topic,
@@ -67,7 +71,7 @@ def generate_article():
                 "description": f"An emotional and deeply researched exploration into {topic}.",
                 "image": image_url,
                 "content": raw_html,
-                "link": "contact.html"
+                "link": article_link
             }
 
             blogs_file = "blogs.json"
@@ -95,4 +99,4 @@ def generate_article():
 
 if __name__ == "__main__":
     generate_article()
-          
+    

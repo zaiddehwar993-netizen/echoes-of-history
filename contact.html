@@ -11,6 +11,155 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
+
+    <!-- ============================================================
+         New contact-page components (badge, form, FAQ).
+         Scoped so it never touches existing site styles in style.css.
+    ============================================================= -->
+    <style>
+        .availability-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: #d4af37;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 7px 16px;
+            border-radius: 30px;
+            margin-bottom: 1.75rem;
+        }
+        .availability-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3ddc84;
+            box-shadow: 0 0 0 rgba(61, 220, 132, 0.6);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%   { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.55); }
+            70%  { box-shadow: 0 0 0 8px rgba(61, 220, 132, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0); }
+        }
+        .response-time {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary, #a8a8a8);
+            margin: -1.25rem 0 2rem;
+        }
+        .response-time i { color: #d4af37; margin-right: 6px; }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        @media (min-width: 900px) {
+            .contact-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+        }
+
+        .contact-form-wrapper h3,
+        .faq-section h3 {
+            font-family: 'Cinzel', serif;
+            color: #f5f5f5;
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 14px;
+            padding: 1.75rem;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary, #a8a8a8);
+        }
+        .form-group input,
+        .form-group textarea {
+            background: #14140f;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #f5f5f5;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color .2s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus { border-color: #d4af37; }
+        .form-group textarea { resize: vertical; min-height: 110px; }
+
+        .contact-form button {
+            background: #d4af37;
+            color: #14140f;
+            border: none;
+            border-radius: 8px;
+            padding: 13px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .contact-form button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .contact-form button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .form-status {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            min-height: 1.1em;
+        }
+        .form-status.success { color: #3ddc84; }
+        .form-status.error { color: #e2544f; }
+
+        /* FAQ */
+        .faq-section { display: flex; flex-direction: column; gap: 0.8rem; }
+        .faq-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .faq-item summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 14px 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary .chevron {
+            color: #d4af37;
+            transition: transform .25s ease;
+            flex-shrink: 0;
+        }
+        .faq-item[open] summary .chevron { transform: rotate(180deg); }
+        .faq-item p {
+            padding: 0 18px 16px;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: var(--text-secondary, #a8a8a8);
+        }
+    </style>
 </head>
 <body>
 
@@ -30,8 +179,13 @@
     <section class="contact-section" style="min-height: 75vh; padding-top: 5rem;">
         <div class="contact-container">
             <h2 class="section-title">Let's Work Together</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Have a project in mind or need a professional website? Connect with me directly:</p>
-            
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Have a project in mind or need a professional website? Connect with me directly:</p>
+
+            <div class="availability-badge">
+                <span class="dot"></span> Available for Freelance Projects
+            </div>
+            <p class="response-time"><i class="fas fa-clock"></i>Usually replies within 24 hours</p>
+
             <div class="social-links">
                 <a href="https://wa.me/923108604886" class="social-card" target="_blank">
                     <i class="fab fa-whatsapp"></i>
@@ -63,6 +217,64 @@
                     <span>Code With Zaid</span>
                 </a>
             </div>
+
+            <!-- Contact form + FAQ -->
+            <div class="contact-grid">
+                <div class="contact-form-wrapper">
+                    <h3>Send a Message</h3>
+                    <form class="contact-form" id="contactForm">
+                        <!-- FormSubmit config: no signup needed, first email activates the endpoint -->
+                        <input type="hidden" name="_subject" value="New message from Echoes of History">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+                        <div class="form-group">
+                            <label for="cf-name">Name</label>
+                            <input type="text" id="cf-name" name="name" placeholder="Your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-email">Email</label>
+                            <input type="email" id="cf-email" name="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-message">Message</label>
+                            <textarea id="cf-message" name="message" placeholder="Tell me about your project..." required></textarea>
+                        </div>
+                        <button type="submit" id="cf-submit">Send Message</button>
+                        <p class="form-status" id="cf-status"></p>
+                    </form>
+                </div>
+
+                <div class="faq-section">
+                    <h3>Frequently Asked Questions</h3>
+
+                    <details class="faq-item">
+                        <summary>How long does a website take to build?<i class="fas fa-chevron-down chevron"></i></summary>
+                        <p>Most projects take 5–14 days depending on scope — a simple landing page is faster, while a full platform with a database (like a job board or dashboard) takes longer.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>How is pricing decided?<i class="fas fa-chevron-down chevron"></i></summary>
+                        <p>Pricing depends on features, design complexity, and whether you need ongoing support. Message me your requirements on WhatsApp and I'll send a clear quote.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>What technologies do you use?<i class="fas fa-chevron-down chevron"></i></summary>
+                        <p>Modern, fast, and SEO-friendly stacks — HTML/CSS/JS for lighter sites, and Next.js with Supabase for full web apps with logins, dashboards, or databases.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>Do I get support after launch?<i class="fas fa-chevron-down chevron"></i></summary>
+                        <p>Yes — every project includes post-launch support for bug fixes, and ongoing maintenance plans are available if you need regular updates.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>How does payment work?<i class="fas fa-chevron-down chevron"></i></summary>
+                        <p>Typically a portion upfront to begin work, with the remainder on delivery. Exact terms are agreed on before the project starts.</p>
+                    </details>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -75,5 +287,43 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Contact form submission via FormSubmit (no backend needed).
+        // First submission triggers a one-time "activate this endpoint" email to zaiddehwar993@gmail.com — confirm it once and it's live permanently.
+        (function () {
+            const form = document.getElementById('contactForm');
+            if (!form) return;
+            const statusEl = document.getElementById('cf-status');
+            const submitBtn = document.getElementById('cf-submit');
+            const ENDPOINT = 'https://formsubmit.co/ajax/zaiddehwar993@gmail.com';
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+                statusEl.textContent = '';
+                statusEl.className = 'form-status';
+
+                try {
+                    const res = await fetch(ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(Object.fromEntries(new FormData(form)))
+                    });
+                    if (!res.ok) throw new Error('Request failed');
+
+                    statusEl.textContent = "Message sent! I'll get back to you soon.";
+                    statusEl.className = 'form-status success';
+                    form.reset();
+                } catch (err) {
+                    statusEl.textContent = "Couldn't send right now — please try WhatsApp or Email Me above.";
+                    statusEl.className = 'form-status error';
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

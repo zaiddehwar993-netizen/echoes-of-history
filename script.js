@@ -5,24 +5,25 @@ const fallbackArticles = [
         title: "The Golden Age of Islamic Science",
         category: "Islamic Era",
         description: "Discover how Muslim scholars preserved and advanced medicine, mathematics, and astronomy during Europe's Dark Ages.",
-        image: "[https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=1000&q=80)",
-        link: "contact.html"
+        image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=1000&q=80",
+        link: "blog-detail.html?title=The%20Golden%20Age%20of%20Islamic%20Science"
     },
     {
         title: "The Rise & Secrets of Ancient Egypt",
         category: "Ancient Civilizations",
         description: "An exploration into the architectural marvels, pharaohs, and engineering behind the Great Pyramids and ancient temples.",
-        image: "[https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80)",
-        link: "contact.html"
+        image: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80",
+        link: "blog-detail.html?title=The%20Rise%20%26%20Secrets%20of%20Ancient%20Egypt"
     },
     {
         title: "Ottoman Empire: Architecture & Legacy",
         category: "Ottoman History",
         description: "Unveiling the diplomatic power, grand domes, and architectural genius of Mimar Sinan and Hagia Sophia.",
-        image: "[https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1000&q=80](https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1000&q=80)",
-        link: "contact.html"
+        image: "https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1000&q=80",
+        link: "blog-detail.html?title=Ottoman%20Empire%3A%20Architecture%20%26%20Legacy"
     }
 ];
+
 
 // Function to render articles inside .articles-grid
 async function renderArticles() {

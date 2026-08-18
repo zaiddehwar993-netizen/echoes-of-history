@@ -1,7 +1,7 @@
-// Echoes of History - Main JavaScript File
+// Echoes of History - Main JavaScript File (Updated for Dynamic blogs.json)
 
-// Historical Articles Data with HD High-Quality Images & Clickable Links
-const articlesData = [
+// Fallback Articles Data in case blogs.json fails to load
+const fallbackArticles = [
     {
         title: "The Golden Age of Islamic Science",
         category: "Islamic Era",
@@ -26,20 +26,34 @@ const articlesData = [
 ];
 
 // Function to render articles inside .articles-grid
-function renderArticles() {
+async function renderArticles() {
     const container = document.querySelector('.articles-grid');
     if (!container) return;
+
+    let articlesData = fallbackArticles;
+
+    try {
+        const response = await fetch('blogs.json');
+        if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+                articlesData = data;
+            }
+        }
+    } catch (error) {
+        console.log('Using fallback articles due to fetch error:', error);
+    }
 
     container.innerHTML = articlesData.map(article => `
         <article class="article-card">
             <div class="card-img-wrapper">
-                <img src="${article.image}" alt="${article.title}">
+                <img src="${article.image || 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1000&q=80'}" alt="${article.title}">
             </div>
             <div class="card-body">
-                <span class="category-tag">${article.category}</span>
+                <span class="category-tag">${article.category || 'History'}</span>
                 <h3>${article.title}</h3>
                 <p>${article.description}</p>
-                <a href="${article.link}" class="read-btn">
+                <a href="${article.link || 'contact.html'}" class="read-btn">
                     <span>Read Article</span> <i class="fas fa-arrow-right"></i>
                 </a>
             </div>

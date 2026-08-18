@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Detail - Echoes of History</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="logo">ECHOES OF HISTORY</div>
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="articles.html" class="active">Articles</a>
+            <a href="impact.html">Impact</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Main Article Content Section -->
+    <main class="article-detail-container" style="padding: 100px 20px; max-width: 800px; margin: 0 auto; color: #f4f4f4;">
+        <div id="article-content-box">
+            <h1 id="article-title" style="font-size: 2.5rem; margin-bottom: 15px; color: #d4af37;">Loading Article...</h1>
+            <span id="article-category" class="category-tag" style="display: inline-block; margin-bottom: 20px;">History</span>
+            <div class="card-img-wrapper" style="margin-bottom: 30px; border-radius: 10px; overflow: hidden;">
+                <img id="article-image" src="" alt="Article Image" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div id="article-body" style="line-height: 1.8; font-size: 1.1rem;">
+                <p>Please wait while we load your historical story...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 20px; color: #888;">
+        <p>&copy; 2026 Echoes of History. Developed by Zaid.</p>
+    </footer>
+
+    <script>
+        async function loadSingleArticle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleTitle = urlParams.get('title');
+
+            try {
+                const response = await fetch('blogs.json');
+                if (response.ok) {
+                    const blogs = await response.json();
+                    
+                    // Match article by title or pick the first one if no param
+                    let currentBlog = blogs[0];
+                    if (articleTitle) {
+                        const found = blogs.find(b => b.title.toLowerCase() === decodeURIComponent(articleTitle).toLowerCase());
+                        if (found) currentBlog = found;
+                    }
+
+                    if (currentBlog) {
+                        document.title = currentBlog.title + " - Echoes of History";
+                        document.getElementById('article-title').textContent = currentBlog.title;
+                        document.getElementById('article-category').textContent = currentBlog.category || currentBlog.tag || 'History';
+                        document.getElementById('article-image').src = currentBlog.image;
+                        
+                        // Check if content is HTML or plain text
+                        const bodyBox = document.getElementById('article-body');
+                        if (currentBlog.content.includes('<p>') || currentBlog.content.includes('<h2>')) {
+                            bodyBox.innerHTML = currentBlog.content;
+                        } else {
+                            bodyBox.innerHTML = `<p>${currentBlog.content.replace(/\n\n/g, '</p><p>')}</p>`;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading article detail:", error);
+                document.getElementById('article-body').innerHTML = "<p>Failed to load the article content.</p>";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSingleArticle);
+    </script>
+</body>
+</html>
+

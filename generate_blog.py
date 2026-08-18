@@ -23,7 +23,7 @@ def generate_article():
     selected = random.choice(TOPICS)
     topic = selected["topic"]
     category = selected["tag"]
-    
+
     # Generate Pollinations AI HD Image URL
     prompt_encoded = requests.utils.quote(selected["img_prompt"])
     image_url = f"https://image.pollinations.ai/prompt/{prompt_encoded}?width=1000&height=600&nologo=true&seed={random.randint(100,999)}"
@@ -40,12 +40,11 @@ def generate_article():
     )
 
     try:
-                response = client.models.generate_content(
+        response = client.models.generate_content(
             model='gemini-2.0-flash',
             contents=prompt_text,
-                )
-        
-        
+        )
+
         if response and response.text:
             raw_html = response.text.strip()
             raw_html = raw_html.replace("```html", "").replace("```", "").strip()
@@ -85,4 +84,3 @@ def generate_article():
 
 if __name__ == "__main__":
     generate_article()
-    

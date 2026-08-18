@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import random
+import pathlib
 
 # DeepSeek API Key from GitHub Secrets
 API_KEY = os.getenv("DEEPSEEK_API_KEY")
@@ -64,17 +65,8 @@ def generate_article():
             encoded_title = requests.utils.quote(topic)
             article_link = f"blog-detail.html?title={encoded_title}"
 
-            # Save / Update blogs.json
-            blog_entry = {
-                "title": topic,
-                "category": category,
-                "description": f"An emotional and deeply researched exploration into {topic}.",
-                "image": image_url,
-                "content": raw_html,
-                "link": article_link
-            }
-
-            blogs_file = "blogs.json"
+            # Save / Update blogs.json using absolute path
+            blogs_file = str(pathlib.Path(__file__).parent.resolve() / "blogs.json")
             blogs_data = []
 
             if os.path.exists(blogs_file):
@@ -85,6 +77,14 @@ def generate_article():
                     blogs_data = []
 
             # Add new blog at top
+            blog_entry = {
+                "title": topic,
+                "category": category,
+                "description": f"An emotional and deeply researched exploration into {topic}.",
+                "image": image_url,
+                "content": raw_html,
+                "link": article_link
+            }
             blogs_data.insert(0, blog_entry)
 
             # Save updated file

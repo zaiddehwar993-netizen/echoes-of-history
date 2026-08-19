@@ -6,6 +6,11 @@
     <title id="page-title">Article Detail - Echoes of History</title>
     <meta id="meta-description" name="description" content="Read historical chronicles on Echoes of History.">
 
+    <!-- Stops Chrome's own "Translate this page?" popup from appearing.
+         Our custom language-switcher widget below still works normally —
+         this only blocks the browser's automatic prompt. -->
+    <meta name="google" content="notranslate">
+
     <!-- Open Graph / Social Share Preview -->
     <meta id="og-title" property="og:title" content="Echoes of History">
     <meta id="og-description" property="og:description" content="Read historical chronicles on Echoes of History.">
@@ -27,6 +32,14 @@
             background: linear-gradient(90deg, #d4af37, #f4e5a1);
             z-index: 9999;
             transition: width 0.1s ease-out;
+        }
+
+        /* ---------- Article page header (centered logo, no nav) ---------- */
+        header.header.article-page-header {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center;
+            text-align: center;
         }
 
         /* ---------- Breadcrumbs ---------- */
@@ -52,24 +65,48 @@
         }
         .article-meta-row span { display: flex; align-items: center; gap: 6px; }
 
-        /* ---------- Font size controls ---------- */
+        /* ---------- Font size controls (premium "A A" pill) ---------- */
         .font-controls {
             display: flex;
-            gap: 8px;
             align-items: center;
-            margin: 10px 0 20px 0;
+            gap: 10px;
+            margin: 14px 0 22px 0;
         }
-        .font-controls button {
+        .font-controls-label {
+            color: #888;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+        .font-size-toggle {
+            display: flex;
+            align-items: center;
+            background: rgba(212, 175, 55, 0.06);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+        .font-size-toggle button {
             background: transparent;
-            border: 1px solid #d4af37;
+            border: none;
             color: #d4af37;
-            border-radius: 6px;
-            width: 34px;
-            height: 34px;
+            width: 40px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            transition: background 0.2s ease, color 0.2s ease;
         }
-        .font-controls button:hover { background: #d4af37; color: #000; }
+        .font-size-toggle button:first-child { font-size: 0.75rem; }
+        .font-size-toggle button:last-child { font-size: 1.05rem; }
+        .font-size-toggle button:hover,
+        .font-size-toggle button:active { background: #d4af37; color: #0d0d0d; }
+        .font-size-divider {
+            width: 1px;
+            height: 18px;
+            background: rgba(212, 175, 55, 0.35);
+        }
 
         /* ---------- Table of contents ---------- */
         #table-of-contents {
@@ -204,26 +241,40 @@
         #google_translate_element { display: none; }
         .goog-te-banner-frame { display: none !important; }
         body { top: 0 !important; }
+
         #translate-widget {
             position: fixed;
             bottom: 90px;
             left: 20px;
             z-index: 998;
         }
+
+        /* Premium labeled pill instead of the old plain circle icon */
         #translate-toggle {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
+            width: auto;
+            height: 44px;
+            padding: 0 14px;
+            border-radius: 30px;
             background: #141414;
             border: 1px solid #d4af37;
             color: #d4af37;
-            font-size: 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            transition: background 0.2s ease;
         }
+        #translate-toggle:hover { background: rgba(212, 175, 55, 0.1); }
+        #translate-toggle i.fa-globe { font-size: 1rem; }
+        .translate-chevron {
+            font-size: 0.65rem;
+            transition: transform 0.2s ease;
+        }
+        #translate-toggle[aria-expanded="true"] .translate-chevron { transform: rotate(180deg); }
+
         #translate-dropdown {
             display: none;
             position: absolute;
@@ -233,7 +284,7 @@
             border: 1px solid #d4af37;
             border-radius: 10px;
             padding: 8px;
-            min-width: 170px;
+            min-width: 190px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
         #translate-dropdown.open { display: block; }
@@ -266,15 +317,9 @@
 
     <div id="reading-progress-bar"></div>
 
-    <!-- Header / Navbar -->
-    <header class="header">
+    <!-- Header / Navbar (centered logo only on this page — no nav links) -->
+    <header class="header article-page-header">
         <div class="logo">ECHOES OF HISTORY</div>
-        <nav class="nav">
-            <a href="index.html">Home</a>
-            <a href="articles.html" class="active">Articles</a>
-            <a href="impact.html">Impact</a>
-            <a href="contact.html">Contact</a>
-        </nav>
     </header>
 
     <nav class="breadcrumbs">
@@ -294,9 +339,12 @@
             </div>
 
             <div class="font-controls">
-                <span style="color:#888; font-size:0.85rem;">Text size:</span>
-                <button id="font-decrease" title="Decrease text size">A-</button>
-                <button id="font-increase" title="Increase text size">A+</button>
+                <span class="font-controls-label">Text Size</span>
+                <div class="font-size-toggle">
+                    <button id="font-decrease" title="Decrease text size" aria-label="Decrease text size">A</button>
+                    <span class="font-size-divider"></span>
+                    <button id="font-increase" title="Increase text size" aria-label="Increase text size">A</button>
+                </div>
             </div>
 
             <div class="card-img-wrapper" style="margin-bottom: 20px; border-radius: 10px; overflow: hidden;">
@@ -333,7 +381,11 @@
     <!-- Google Translate (free, no API key) -->
     <div id="google_translate_element"></div>
     <div id="translate-widget">
-        <button id="translate-toggle" title="Translate this page"><i class="fa-solid fa-language"></i></button>
+        <button id="translate-toggle" title="Change language" aria-expanded="false">
+            <i class="fa-solid fa-globe"></i>
+            <span id="translate-current-label">English</span>
+            <i class="fa-solid fa-chevron-down translate-chevron"></i>
+        </button>
         <div id="translate-dropdown">
             <button data-lang="en"><i class="fa-solid fa-globe"></i> English</button>
             <button data-lang="ur"><i class="fa-solid fa-globe"></i> اردو (Urdu)</button>
@@ -432,7 +484,7 @@
 
             // Date
             const dateStr = currentBlog.date || currentBlog.publishedDate;
-            document.getElementById('article-date').textContent = dateStr ? new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Recently published';
+                        document.getElementById('article-date').textContent = dateStr ? new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Recently published';
 
             // Body content
             const bodyBox = document.getElementById('article-body');
@@ -587,20 +639,25 @@
 
         // Translate widget toggle
         document.getElementById('translate-toggle').addEventListener('click', function() {
-            document.getElementById('translate-dropdown').classList.toggle('open');
+            const dropdown = document.getElementById('translate-dropdown');
+            const isOpen = dropdown.classList.toggle('open');
+            this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
         document.addEventListener('click', function(e) {
             const widget = document.getElementById('translate-widget');
             if (!widget.contains(e.target)) {
                 document.getElementById('translate-dropdown').classList.remove('open');
+                document.getElementById('translate-toggle').setAttribute('aria-expanded', 'false');
             }
         });
 
         document.querySelectorAll('#translate-dropdown button').forEach(btn => {
             btn.addEventListener('click', function() {
                 const lang = this.getAttribute('data-lang');
+                document.getElementById('translate-current-label').textContent = this.textContent.trim();
                 triggerGoogleTranslate(lang);
                 document.getElementById('translate-dropdown').classList.remove('open');
+                document.getElementById('translate-toggle').setAttribute('aria-expanded', 'false');
             });
         });
 

@@ -2,7 +2,9 @@ name: Auto Historical Blog Publisher
 
 on:
   schedule:
-    - cron: '0 0,14 * * *'
+    # Runs once a day at 14:00 UTC = 7:00 PM Pakistan Time (PKT, UTC+5)
+    # Prime time when most readers are free/active in the evening.
+    - cron: '0 14 * * *'
   workflow_dispatch:
 
 jobs:
@@ -35,4 +37,3 @@ jobs:
         git add .
         git commit -m "Automated daily historical blog by Gemini AI" || exit 0
         git push
-        
